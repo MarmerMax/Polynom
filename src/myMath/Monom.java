@@ -13,6 +13,7 @@ public class Monom implements function{
 	 * Construction function
 	 * @param a coefficient
 	 * @param b power
+	 * @throws RuntimeException
 	 */
 	public Monom(double a, int b) throws RuntimeException{
 		if(b<0) throw new RuntimeException("Error: power is negative!");
@@ -67,6 +68,8 @@ public class Monom implements function{
 	 */
 	public String toString() {
 		if(get_coefficient() == 0) return "0";
+		if(get_coefficient() == 1) return "x^" + get_power();
+		if(get_coefficient() == -1) return "-x^" + get_power();
 		if(get_power() == 0) return "" + get_coefficient();
 		if(get_power() == 1) return get_coefficient() + "*x";
 		return get_coefficient() + "*x^" + get_power();  
@@ -75,10 +78,7 @@ public class Monom implements function{
 	 * Compute the derivative of this Monom
 	 * @return new Monom after derivative
 	 */
-	public Monom derivative() throws RuntimeException{
-//		Monom m = this.copy();
-//		if (m == null) throw new RuntimeException("Error: you can't derivative null Object"); 
-		
+	public Monom derivative(){
 		double der = this.get_coefficient() * this.get_power();
 		int pow = this.get_power() - 1;
 		
@@ -87,6 +87,7 @@ public class Monom implements function{
 	/**
 	 * Adding to monoms together, if them have different powers we can't add them.
 	 * @param cur the monom that we adding to this monom
+	 * @throws RuntimeException
 	 */
 	public void add(Monom cur) throws RuntimeException {
 		if(this.get_power()!=cur.get_power()) {

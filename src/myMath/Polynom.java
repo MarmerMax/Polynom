@@ -22,8 +22,14 @@ public class Polynom implements Polynom_able{
 	public Polynom() {
 		myPolynom = new ArrayList<Monom>();
 	}
-	
-	public Polynom(Polynom p) {
+	/**
+	 * Construction new Polynom via other polynom.
+	 * @param p
+	 * @throws RuntimeException
+	 */
+	public Polynom(Polynom p) throws RuntimeException {
+		if(p == null) throw new RuntimeException("Error: null can't donate him Polynom");
+		
 		Polynom temp = (Polynom)p.copy();
 		this.myPolynom = temp.myPolynom;
 	}

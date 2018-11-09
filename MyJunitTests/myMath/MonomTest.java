@@ -60,7 +60,7 @@ class MonomTest {
 	}
 
 	@Test
-	void testMonomString1() { // good input
+	void testMonomString1() { //Construction with String good input
 		String monom = "-3.14*x^5";
 		general = new Monom(monom);
 		int power = 5;
@@ -73,9 +73,8 @@ class MonomTest {
 	}
 	
 	@Test
-	void testMonomString2() { //power is negative
+	void testMonomString2() { //Construction with String power is negative (wrong input)
 		String monom = "-3.14*x^-5"; // some wrong string type Monom
-		
 		boolean flag;
 		try {
 			general = new Monom(monom); //this row must throw exception because power is negative
@@ -107,18 +106,18 @@ class MonomTest {
 
 	@Test
 	void testToString() {
-		String str = "-4.5*x^5";
+		String str = "" + general;
 		assertEquals(str, general.toString());
 	}
 
 	@Test
 	void testDerivative() {
-		general = general.derivative();
-		
-		int power = 5;
-		double coefficient = -4.5;
+		int power = general.get_power();
+		double coefficient = general.get_coefficient();
 		coefficient *= power;
 		power--;
+
+		general = general.derivative();//derivative this monom
 		second = new Monom(coefficient, power);
 
 		assertEquals(true, second.equals(general));
@@ -126,10 +125,11 @@ class MonomTest {
 
 	@Test
 	void testAdd1() {//if powers of Monoms is equals
-		second = new Monom(3, 5) ;
+		second = new Monom(3, 5);
+		double res = second.get_coefficient() + general.get_coefficient();
 		try {
 			general.add(second);
-			assertEquals(-1.5, general.get_coefficient());
+			assertEquals(res, general.get_coefficient());
 		}
 		catch(RuntimeException e){
 			System.err.println("Error: can not add two monoms with different powers");
@@ -163,7 +163,7 @@ class MonomTest {
 
 	@Test
 	void testMultiply() {
-		second = new Monom(3, 3); // create second Monom
+		second = new Monom(3.0, 3); // create second Monom
 		
 		double coefficient = general.get_coefficient() * second.get_coefficient(); //count coefficient
 		int power = general.get_power() + second.get_power(); //count power
@@ -199,11 +199,7 @@ class MonomTest {
 	@Test
 	void testCopy() {
 		second = general.copy();
-		boolean flag = true;
-		if(second.get_coefficient() != general.get_coefficient() || second.get_power() != general.get_power()) {
-			flag = false;
-		}
-		assertEquals(true, flag);
+		assertEquals(true, second.equals(general));
 	}
 
 }
