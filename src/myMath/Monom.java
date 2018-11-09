@@ -8,13 +8,14 @@ package myMath;
  *
  */
 public class Monom implements function{
-	
+
 	/**
 	 * Construction function
 	 * @param a coefficient
 	 * @param b power
 	 */
-	public Monom(double a, int b){
+	public Monom(double a, int b) throws RuntimeException{
+		if(b<0) throw new RuntimeException("Error: power is negative!");
 		this.set_coefficient(a);
 		this.set_power(b);
 	}
@@ -131,8 +132,8 @@ public class Monom implements function{
 		Monom m = new Monom(this._coefficient, this.get_power());
 		return m;
 	}
-	
-	
+
+
 
 	//****************** Private Methods and Data *****************
 	/**
@@ -149,8 +150,8 @@ public class Monom implements function{
 	private void set_power(int p) {
 		this._power = p;
 	}
-	
+
 	private double _coefficient; // 
 	private int _power;
-	
+
 }
