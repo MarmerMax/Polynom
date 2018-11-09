@@ -33,6 +33,7 @@ public class Monom implements function{
 	public Monom(String s) {
 		String regex = "[*x^]+"; 
 		String [] temp = s.split(regex);  // brake string monom to coefficient and power 
+		if(Integer.parseInt(temp[1]) < 0) throw new RuntimeException("Error: power is negative!");
 		this.set_coefficient(Double.parseDouble(temp[0]));
 		this.set_power(Integer.parseInt(temp[1]));
 	}
@@ -65,22 +66,29 @@ public class Monom implements function{
 	 * Compute Monom format to String format
 	 */
 	public String toString() {
+		if(get_coefficient() == 0) return "0";
+		if(get_power() == 0) return "" + get_coefficient();
+		if(get_power() == 1) return get_coefficient() + "*x";
 		return get_coefficient() + "*x^" + get_power();  
 	}
 	/**
 	 * Compute the derivative of this Monom
 	 * @return new Monom after derivative
 	 */
-	public Monom derivative() {
+	public Monom derivative() throws RuntimeException{
+//		Monom m = this.copy();
+//		if (m == null) throw new RuntimeException("Error: you can't derivative null Object"); 
+		
 		double der = this.get_coefficient() * this.get_power();
 		int pow = this.get_power() - 1;
+		
 		return new Monom(der, pow);
 	}
 	/**
 	 * Adding to monoms together, if them have different powers we can't add them.
 	 * @param cur the monom that we adding to this monom
 	 */
-	public void add(Monom cur) {
+	public void add(Monom cur) throws RuntimeException {
 		if(this.get_power()!=cur.get_power()) {
 			throw new RuntimeException("Error: can not add two monoms with different coefficients");
 		}
