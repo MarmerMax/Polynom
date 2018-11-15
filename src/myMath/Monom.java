@@ -57,7 +57,7 @@ public class Monom implements function{
 	 * This method count value of this monom with parameter x
 	 * @param x the parameter .
 	 */
-	public double f(double x) {
+	public double f(double x){
 		double res = 1;
 		res = Math.pow(x, get_power());
 		res *= get_coefficient();
@@ -90,6 +90,9 @@ public class Monom implements function{
 	 * @throws RuntimeException
 	 */
 	public void add(Monom cur) throws RuntimeException {
+		if(cur == null) {
+			return;
+		}
 		if(this.get_power()!=cur.get_power()) {
 			throw new RuntimeException("Error: can not add two monoms with different coefficients");
 		}
@@ -109,8 +112,12 @@ public class Monom implements function{
 	/**
 	 * Multiply this monom by current monom.
 	 * @param cur the monom that we multiply by this monom
+	 * @throws NullPointerException
 	 */
-	public void multiply(Monom cur) {
+	public void multiply(Monom cur) throws NullPointerException {
+		if(cur == null) {
+			throw new NullPointerException("Error: can't multiply by null Object!!!");
+		}
 		this.set_coefficient(this.get_coefficient() * cur.get_coefficient());
 		this.set_power(this.get_power()+cur.get_power());
 	}

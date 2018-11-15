@@ -1,9 +1,13 @@
 package myMath;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.function.Predicate;
+
 
 import myMath.Monom;
 /**
@@ -29,7 +33,7 @@ public class Polynom implements Polynom_able{
 	 */
 	public Polynom(Polynom p) throws RuntimeException {
 		if(p == null) throw new RuntimeException("Error: null can't donate him Polynom");
-		
+
 		Polynom temp = (Polynom)p.copy();
 		this.myPolynom = temp.myPolynom;
 	}
@@ -39,7 +43,7 @@ public class Polynom implements Polynom_able{
 	 * b - power (can be integer positive number )
 	 * @param inputPol the string type polynom that we need to compute to Monoms type.
 	 */
-	
+
 	public Polynom(String inputPol) {  // assume correct input. The correct input is "6*x^4+5*x^3-2*x^5..." (without spaces)
 		boolean firstSignOfArray = false; //we need to check first sign of string. he can be '+' or '-' or number
 		if (inputPol.charAt(0) == '-' || inputPol.charAt(0) == '+') { // if he's '+' or '-'
@@ -53,11 +57,11 @@ public class Polynom implements Polynom_able{
 		}
 		String regex = "[+-]+";
 		String [] p = inputPol.split(regex);  // split the input to Monoms by '+' and '-' 
-		
+
 		int indexOfSign = 1;                  
 		boolean [] signs = new boolean[p.length];// boolean array to indicate signs of Monoms true='+' and false='-'
 		signs[0] = firstSignOfArray;
-		
+
 		for(int i = 1; i < inputPol.length(); i++) {  // getting signs of Monoms
 			if(inputPol.charAt(i) == '+') {
 				signs[indexOfSign] = true;
@@ -67,7 +71,7 @@ public class Polynom implements Polynom_able{
 				indexOfSign++;
 			}
 		}
-		
+
 		Polynom temp = new Polynom(); // create new Polynom
 		for(int j = 0; j < p.length; j++) {
 			Monom m = new Monom(p[j]); // send string Monom to Monom construction by string 
@@ -76,15 +80,15 @@ public class Polynom implements Polynom_able{
 			}
 			temp.add(m);  //add the actual monom
 		}
-		
+
 		myPolynom = temp.myPolynom;
 	}
-	
+
 	/**
 	 * Compute the polynom to String type.
 	 * @return String type.
 	 */
-	
+
 	public String toString() {
 		String s = "";
 		this.iterator();
@@ -126,13 +130,16 @@ public class Polynom implements Polynom_able{
 		}
 		return ans;
 	}
-	
+
 	/**
 	 * This function adding two polynoms.
 	 * @param p1 polynom that we adding to this polynom.
 	 */
 	@Override
 	public void add(Polynom_able p1) { // like to add some amount of Monoms
+		if(p1 == null) {
+			return;
+		}
 		Iterator<Monom> iter = p1.iterator();
 		while(iter.hasNext()) { 
 			Monom m = iter.next();
@@ -145,6 +152,9 @@ public class Polynom implements Polynom_able{
 	 */
 	@Override
 	public void add(Monom m1) {
+		if(m1 == null) {
+			return;
+		}
 		if(this.myPolynom.size() == 0 && m1.is_exist()) { //if this polynom empty add first Monom without sort
 			myPolynom.add(m1);
 		}
@@ -184,9 +194,13 @@ public class Polynom implements Polynom_able{
 	/**
 	 * This method multiply our this polynom to inputs monom.
 	 * @param m Monom that we multiply by this polynom.
+	 * @throws RuntimeException
 	 */
 	@Override
-	public void multiply(Monom m) {
+	public void multiply(Monom m) throws RuntimeException{
+		if(m == null) {
+			throw new RuntimeException("Error: can't mupltiply by null monom!!!");
+		}
 		if (m.get_coefficient() == 0) {
 			this.myPolynom = new ArrayList<>();
 		}
@@ -204,9 +218,13 @@ public class Polynom implements Polynom_able{
 	/**
 	 * This method multiply two polynoms.
 	 * @param p1 polynom that we need to multiply by this polynom.
+	 * @throws RuntimeException
 	 */
 	@Override
-	public void multiply(Polynom_able p1) {
+	public void multiply(Polynom_able p1) throws RuntimeException{
+		if(p1 == null) {
+			throw new RuntimeException("Error: can't mupltiply by null polynom!!!");
+		}
 		Polynom temp2 = (Polynom)p1.copy();
 		Polynom res = new Polynom();
 		Iterator<Monom> it = temp2.iterator();   
@@ -218,7 +236,7 @@ public class Polynom implements Polynom_able{
 		}
 		res.myPolynom.sort(cmpMonon);
 		this.myPolynom = res.myPolynom;
- 	}
+	}
 	/**
 	 * This method check if our polynom is "zero".
 	 * @return true - if polynom composed of zero monoms or don't have any monom, false - if this polynom not empty
@@ -259,8 +277,13 @@ public class Polynom implements Polynom_able{
 		Iterator<Monom> it = p1.iterator();
 		while(it.hasNext()) {
 			Monom m = it.next();
-			m = m.derivative();     // derivative this Monom and add him to his polynom 
-			ans.add(m);
+			if(m.get_power() > 0) {
+				m = m.derivative();	// derivative this Monom and add him to his polynom
+				ans.add(m);
+			}
+			else {
+				it.remove();
+			}
 		}
 		return ans;
 	}
@@ -271,12 +294,15 @@ public class Polynom implements Polynom_able{
 	 */
 	@Override
 	public boolean equals(Polynom_able p1) {
+		if(this.getSize() == 0 && p1.isZero()) {
+			return true;
+		}
 		Polynom temp1 = (Polynom)this.copy();
 		Polynom temp2 = (Polynom)p1.copy();
 		if(temp1.getSize() != temp2.getSize()) {  // if other sizes of polynoms so them not equals
 			return false;
 		}
-		
+
 		Iterator<Monom> it1 = temp1.iterator();
 		Iterator<Monom> it2 = temp2.iterator();
 		while(it1.hasNext() && it2.hasNext()) {   
@@ -304,7 +330,7 @@ public class Polynom implements Polynom_able{
 			double area = 0; // count of area by many little trapezoids
 			double step1 = x0;
 			double step2 = step1 + eps;
-			
+
 			while(step2 <= x1) { 					
 				if(f(step1) > 0 && f(step2) > 0) {  // check if the sides of trapezoid a positives
 					area += trapezArea(f(step1), f(step2), eps); // send (y0, y1, h) to formula of trapezoid area
@@ -337,16 +363,16 @@ public class Polynom implements Polynom_able{
 		if(this.getSize() == 0) {
 			throw new RuntimeException("Error: Can't count root of empty polynom");
 		}
-		
+
 		double y0 = this.f(x0); // find y0
 		double y1 = this.f(x1); // find y1
 		double dX = Math.abs(x0 - x1); //distance between x0 and x1
 		double dY = Math.abs(y0 - y1); //distance between y0 and y1
-		
+
 		if(y0 * y1 > 0) { //check if them in another sides of x axis
 			throw new RuntimeException("Error: y0 and y1 placed in common side");
 		}
-				
+
 		while(dX > eps || dY > eps) { //check if them near to point
 			double xMid = (x0 + x1) / 2; 
 			double yMid = this.f(xMid);
@@ -358,7 +384,7 @@ public class Polynom implements Polynom_able{
 				return root(xMid, x1, eps);
 			}
 		}
-				
+
 		return x0;
 	}
 	/**
@@ -369,8 +395,65 @@ public class Polynom implements Polynom_able{
 	public Iterator<Monom> iterator() {
 		return this.myPolynom.iterator();
 	}
+
 	
+//	public void printGraph() {
+//		PlotSettings p = new PlotSettings(-2, 6, -7, 7);
+//		p.setPlotColor(Color.RED);
+//		p.setGridSpacingX(2);
+//		p.setGridSpacingY(2);
+//		p.setTitle("Polynom");
+//		Graph graph = new Graph(p);
+//		Polynomial polToPrint = new Polynomial(this);
+//		graph.functions.add(polToPrint);
+//		polToPrint.searchMinMax(this, -2, 6);
+//		System.out.println("xMin: " + polToPrint.getXmin() + " yMin: " + polToPrint.getYmin() +"\n" +
+//							"xMax:" + polToPrint.getXmax() + " yMax: " + polToPrint.getYmax());
+////		MinMaxPoints minMaxPol = new MinMaxPoints(this);
+////		minMaxPol.getPoints(polToPrint.getXmin(), polToPrint.getYmin(), polToPrint.getXmax(), polToPrint.getYmax());
+////		graph.functions.add(minMaxPol);
+//		//graph.functions.add(1, g);;
+//		new GraphApplication(graph);
+//	}
 	
+	public void PolynomGraph(double x0, double x1) {
+		PolynomPrint polPrint = new PolynomPrint(this, x0, x1);
+		this.findMinMax(x0, x1);
+		polPrint.setVisible(true);
+	}
+	
+	private void findMinMax(double x0, double x1) {
+		MaxPoints = new ArrayList<Double>();
+		MinPoints = new ArrayList<Double>();
+		double temp = x0;
+		double MinTemp;
+		double MaxTemp;
+		while(temp <= x1) {
+			MinTemp = temp;
+			
+			while(this.f(MinTemp) > this.f(temp + 0.01) && temp <= x1) {
+				MinTemp = temp;
+				temp += 0.1;
+			}
+
+			if(MinPoints.size() == 0 || MinTemp != MinPoints.get(MinPoints.size() - 1)) {
+				MinPoints.add(MinTemp);	
+			}
+			MaxTemp = temp;
+			while(this.f(MaxTemp) < this.f(temp + 0.01) && temp <= x1) {
+				MaxTemp = temp;
+				temp += 0.1;
+			}
+			
+			if(MaxPoints.size() == 0 || MaxTemp != MaxPoints.get(MaxPoints.size() - 1)) {
+				MaxPoints.add(MaxTemp);
+			}
+
+		}
+		System.out.println(MinPoints.toString());
+		System.out.println(MaxPoints.toString());
+
+	}
 
 	// ********** add your code below ***********
 	/**
@@ -379,8 +462,8 @@ public class Polynom implements Polynom_able{
 	 */
 
 
-
-
+	private ArrayList<Double> MaxPoints;
+	private ArrayList<Double> MinPoints;
 	private ArrayList<Monom> myPolynom;
 	private static Monom_Comperator cmpMonon= new Monom_Comperator();
 

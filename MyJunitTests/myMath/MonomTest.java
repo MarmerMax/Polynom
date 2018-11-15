@@ -44,7 +44,7 @@ class MonomTest {
 		if (power != second.get_power() || coefficient != second.get_coefficient()) {
 			flag = true;
 		}
-		assertEquals(true,  flag);
+		assertTrue(flag);
 	}
 	
 	@Test
@@ -56,7 +56,7 @@ class MonomTest {
 		}catch(RuntimeException e){
 			flag = true;
 		}
-		assertEquals(true,  flag);
+		assertTrue(flag);
 	}
 
 	@Test
@@ -69,7 +69,7 @@ class MonomTest {
 		if (power != general.get_power() || coefficient != general.get_coefficient()) {
 			flag = false;
 		}
-		assertEquals(true, flag);
+		assertTrue(flag);
 	}
 	
 	@Test
@@ -82,7 +82,7 @@ class MonomTest {
 		}catch(RuntimeException e){
 			flag = true;
 		}
-		assertEquals(true,  flag);
+		assertTrue(flag);
 	}
 
 	@Test
@@ -120,7 +120,7 @@ class MonomTest {
 		general = general.derivative();//derivative this monom
 		second = new Monom(coefficient, power);
 
-		assertEquals(true, second.equals(general));
+		assertTrue(second.equals(general));
 	}
 
 	@Test
@@ -147,18 +147,18 @@ class MonomTest {
 		catch(RuntimeException e){
 			flag = true;;
 		}	
-		assertEquals(true, flag);
+		assertTrue(flag);
 	}
 
 	@Test
 	void testIs_exist1() { //check if general is right Monom, power and coefficient good 
-		assertEquals(true, general.is_exist()); // right input
+		assertTrue(general.is_exist()); // right input
 	}
 	
 	@Test
 	void testIs_exist2() { //check if general is right Monom, power and coefficient good 
 		general = new Monom(0, 8); //wrong input
-		assertEquals(false, general.is_exist());
+		assertFalse(general.is_exist());//Not exist
 	}
 
 	@Test
@@ -174,19 +174,19 @@ class MonomTest {
 		if(general.get_coefficient() != coefficient || general.get_power() != power ) {
 			flag = false; // if not equals so change flag to false
 		}
-		assertEquals(true, flag);
+		assertTrue(flag);
 	}
 
 	@Test
 	void testEqualsMonom1() { // same Monoms
 		second = general.copy();
-		assertEquals(true, general.equals(second)); // check answer with true
+		assertTrue(general.equals(second)); // check answer with true
 	}
 	
 	@Test
 	void testEqualsMonom2() { // others Monoms
 		second = new Monom(1, 1);;
-		assertEquals(false, general.equals(second)); //check answer with false
+		assertFalse(general.equals(second)); //check answer with false
 	}
 
 	@Test
@@ -199,7 +199,7 @@ class MonomTest {
 	@Test
 	void testCopy() {
 		second = general.copy();
-		assertEquals(true, second.equals(general));
+		assertTrue(second.equals(general));
 	}
 
 }
