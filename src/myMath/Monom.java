@@ -31,10 +31,14 @@ public class Monom implements function{
 	 * Construction function. Getting input in String format and compute him to Monom
 	 * @param s Monom in string type
 	 */
-	public Monom(String s) {
+	public Monom(String s) throws RuntimeException{
+		if(!s.contains("*x^")) {
+			throw new  RuntimeException("Error: Invalid input!");
+		}
 		String regex = "[*x^]+"; 
 		String [] temp = s.split(regex);  // brake string monom to coefficient and power 
 		if(Integer.parseInt(temp[1]) < 0) throw new RuntimeException("Error: power is negative!");
+		
 		this.set_coefficient(Double.parseDouble(temp[0]));
 		this.set_power(Integer.parseInt(temp[1]));
 	}

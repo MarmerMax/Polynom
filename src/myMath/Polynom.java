@@ -341,6 +341,27 @@ public class Polynom implements Polynom_able{
 			return area;
 		}
 	}
+	
+	public double areaBelowAxisX(double x0, double x1, double eps) {
+		if(this.getSize() == 0) {
+			throw new RuntimeException("Error: Can't count area of empty polynom");
+		}
+		else {
+			double area = 0; // count of area by many little trapezoids
+			double step1 = x0;
+			double step2 = step1 + eps;
+
+			while(step2 <= x1) { 					
+				if(f(step1) < 0 && f(step2) < 0) {  // check if the sides of trapezoid a positives
+					area += trapezArea(f(step1), f(step2), eps); // send (y0, y1, h) to formula of trapezoid area
+				}
+				step1 += eps;
+				step2 += eps;
+			}
+			return Math.abs(area);
+		}
+	}
+	
 	/**
 	 * This function count area of trapezoids.
 	 * @param a left side.
@@ -401,13 +422,13 @@ public class Polynom implements Polynom_able{
 	 * @param x0 start from x0
 	 * @param x1 finish on x1
 	 */
-	
+
 	public void PolynomGraph(double x0, double x1) {
 		this.findMinMax(x0, x1);
 		PolynomPrint polPrint = new PolynomPrint(this, x0, x1, this.MinPoints, this.MaxPoints);
 		polPrint.setVisible(true);
 	}
-	
+
 	/**
 	 * This private function search minimum and maximum points of this polynom.
 	 * @param x0 start from x0
@@ -417,50 +438,48 @@ public class Polynom implements Polynom_able{
 		MaxPoints = new ArrayList<Double>();
 		MinPoints = new ArrayList<Double>();
 		double temp = x0;
-		double MinTemp;
-		double MaxTemp;
-		while(temp <= x1) {
+		double MinTemp; // temp x min point
+		double MaxTemp; // temp x man point
+		while(temp <= x1) { 
 			MinTemp = temp;
-			
-			while(this.f(MinTemp) > this.f(temp + 0.01) && temp <= x1) {
+
+			while(this.f(MinTemp) > this.f(temp + 0.01) && temp <= x1) { // if function go down find minimum point
 				MinTemp = temp;
 				temp += 0.01;
 			}
 
-			if(MinPoints.size() == 0 || MinTemp != MinPoints.get(MinPoints.size() - 1)) {
+			if(MinPoints.size() == 0 || MinTemp != MinPoints.get(MinPoints.size() - 1)) { //check if we already add him before
 				MinPoints.add(MinTemp);	
 			}
 			MaxTemp = temp;
-			while(this.f(MaxTemp) < this.f(temp + 0.01) && temp <= x1) {
+			while(this.f(MaxTemp) < this.f(temp + 0.01) && temp <= x1) {// if function go up find maximum point
 				MaxTemp = temp;
 				temp += 0.01;
 			}
-			
-			if(MaxPoints.size() == 0 || MaxTemp != MaxPoints.get(MaxPoints.size() - 1)) {
+
+			if(MaxPoints.size() == 0 || MaxTemp != MaxPoints.get(MaxPoints.size() - 1)) {{ //check if we already add him before
 				MaxPoints.add(MaxTemp);
 			}
 
-		}
-		if (MaxPoints.size() != 0 && Math.abs(x1) - Math.abs(MaxPoints.get(MaxPoints.size() - 1)) < 0.01) {
-			MaxPoints.remove(MaxPoints.size() - 1);
-		}
-		if (MaxPoints.size() != 0 && Math.abs(x0) - Math.abs(MaxPoints.get(0)) < 0.01) {
-			MaxPoints.remove(0);
-		}
-		if (MinPoints.size() != 0 && Math.abs(x1) - Math.abs(MinPoints.get(MinPoints.size() - 1)) < 0.01) {
-			MinPoints.remove(MinPoints.size() - 1);
-		}
-		if (MinPoints.size() != 0 && Math.abs(x0) - Math.abs(MinPoints.get(0)) < 0.01) {
-			MinPoints.remove(0);
+			}
+
+			//all "if's" below check if the function get the the wrong points of min and max
+			if (MaxPoints.size() != 0 && Math.abs(x1) - Math.abs(MaxPoints.get(MaxPoints.size() - 1)) < 0.01) {
+				MaxPoints.remove(MaxPoints.size() - 1);
+			}
+			if (MaxPoints.size() != 0 && Math.abs(x0) - Math.abs(MaxPoints.get(0)) < 0.01) {
+				MaxPoints.remove(0);
+			}
+			if (MinPoints.size() != 0 && Math.abs(x1) - Math.abs(MinPoints.get(MinPoints.size() - 1)) < 0.01) {
+				MinPoints.remove(MinPoints.size() - 1);
+			}
+			if (MinPoints.size() != 0 && Math.abs(x0) - Math.abs(MinPoints.get(0)) < 0.01) {
+				MinPoints.remove(0);
+			}
 		}
 	}
 
 	// ********** add your code below ***********
-	/**
-	 * This method return myPolynom.
-	 * @return Polynom.
-	 */
-
 
 	private ArrayList<Double> MaxPoints;
 	private ArrayList<Double> MinPoints;
