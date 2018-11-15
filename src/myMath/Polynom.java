@@ -396,33 +396,24 @@ public class Polynom implements Polynom_able{
 		return this.myPolynom.iterator();
 	}
 
-	
-//	public void printGraph() {
-//		PlotSettings p = new PlotSettings(-2, 6, -7, 7);
-//		p.setPlotColor(Color.RED);
-//		p.setGridSpacingX(2);
-//		p.setGridSpacingY(2);
-//		p.setTitle("Polynom");
-//		Graph graph = new Graph(p);
-//		Polynomial polToPrint = new Polynomial(this);
-//		graph.functions.add(polToPrint);
-//		polToPrint.searchMinMax(this, -2, 6);
-//		System.out.println("xMin: " + polToPrint.getXmin() + " yMin: " + polToPrint.getYmin() +"\n" +
-//							"xMax:" + polToPrint.getXmax() + " yMax: " + polToPrint.getYmax());
-////		MinMaxPoints minMaxPol = new MinMaxPoints(this);
-////		minMaxPol.getPoints(polToPrint.getXmin(), polToPrint.getYmin(), polToPrint.getXmax(), polToPrint.getYmax());
-////		graph.functions.add(minMaxPol);
-//		//graph.functions.add(1, g);;
-//		new GraphApplication(graph);
-//	}
+	/**
+	 * This function print polynom on graph between two points.
+	 * @param x0 start from x0
+	 * @param x1 finish on x1
+	 */
 	
 	public void PolynomGraph(double x0, double x1) {
-		PolynomPrint polPrint = new PolynomPrint(this, x0, x1);
 		this.findMinMax(x0, x1);
+		PolynomPrint polPrint = new PolynomPrint(this, x0, x1, this.MinPoints, this.MaxPoints);
 		polPrint.setVisible(true);
 	}
 	
-	private void findMinMax(double x0, double x1) {
+	/**
+	 * This private function search minimum and maximum points of this polynom.
+	 * @param x0 start from x0
+	 * @param x1 finish on x1
+	 */
+	private void findMinMax(double x0, double x1) {//this private function search point min and max
 		MaxPoints = new ArrayList<Double>();
 		MinPoints = new ArrayList<Double>();
 		double temp = x0;
@@ -433,7 +424,7 @@ public class Polynom implements Polynom_able{
 			
 			while(this.f(MinTemp) > this.f(temp + 0.01) && temp <= x1) {
 				MinTemp = temp;
-				temp += 0.1;
+				temp += 0.01;
 			}
 
 			if(MinPoints.size() == 0 || MinTemp != MinPoints.get(MinPoints.size() - 1)) {
@@ -442,7 +433,7 @@ public class Polynom implements Polynom_able{
 			MaxTemp = temp;
 			while(this.f(MaxTemp) < this.f(temp + 0.01) && temp <= x1) {
 				MaxTemp = temp;
-				temp += 0.1;
+				temp += 0.01;
 			}
 			
 			if(MaxPoints.size() == 0 || MaxTemp != MaxPoints.get(MaxPoints.size() - 1)) {
@@ -450,9 +441,18 @@ public class Polynom implements Polynom_able{
 			}
 
 		}
-		System.out.println(MinPoints.toString());
-		System.out.println(MaxPoints.toString());
-
+		if (MaxPoints.size() != 0 && Math.abs(x1) - Math.abs(MaxPoints.get(MaxPoints.size() - 1)) < 0.01) {
+			MaxPoints.remove(MaxPoints.size() - 1);
+		}
+		if (MaxPoints.size() != 0 && Math.abs(x0) - Math.abs(MaxPoints.get(0)) < 0.01) {
+			MaxPoints.remove(0);
+		}
+		if (MinPoints.size() != 0 && Math.abs(x1) - Math.abs(MinPoints.get(MinPoints.size() - 1)) < 0.01) {
+			MinPoints.remove(MinPoints.size() - 1);
+		}
+		if (MinPoints.size() != 0 && Math.abs(x0) - Math.abs(MinPoints.get(0)) < 0.01) {
+			MinPoints.remove(0);
+		}
 	}
 
 	// ********** add your code below ***********

@@ -37,8 +37,7 @@ public class main {
 	//	frame.setVisible(true);
 		p1.PolynomGraph(-2, 6);
 		//	print.setVisible(true);
-
-
+		
 
 	}
 
